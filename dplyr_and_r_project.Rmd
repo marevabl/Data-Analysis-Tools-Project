@@ -1,0 +1,131 @@
+---
+title: "R and DPLYR Project (Coursera)"
+author: "Mareva Bolueme"
+date: "April 11, 2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+setwd("/Users/marevabl/Desktop/Coding stuff/Coursera")
+```
+
+
+#Quick look at dataframes
+
+```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+knitr::include_graphics("df.png")
+```
+
+
+#Filter
+```{r}
+# Load the mpg dataset
+mpg
+
+# Display the first few rows of the dataset
+head(mpg)
+
+# Check the structure of the dataset
+str(mpg)
+
+# Check the dimensions of the dataset (rows x columns)
+dim(mpg)
+
+# Display the column names of the dataset
+names(mpg)
+
+```
+```{r}
+# Create a histogram of city miles per gallon (cty)
+hist(mpg$cty)
+
+# Filter the dataset to include only rows where city mileage (cty) is greater than 25
+filter(mpg, cty > 25)
+
+# Filter the dataset to include only rows where city mileage (cty) is greater than 25 and model is "civic"
+filter(mpg, cty > 25 & model == "civic")
+
+```
+
+
+#Select
+
+```{r}
+# Select the column 'manufacturer' from the dataset mpg
+select(mpg, manufacturer)
+
+# Display the column names of the dataset
+names(mpg)
+
+# Select the 7th column from the dataset mpg
+select(mpg, 7)
+
+# Select the 7th and 8th columns from the dataset mpg
+select(mpg, c(7,8))
+
+```
+
+
+# Using the pipe operator (%>%) to chain operations
+
+```{r}
+# 1. Filter the dataset to include only rows where city mileage (cty) is greater than 25
+# 2. Select the 7th and 8th columns 
+mpg %>%
+  filter(cty > 25) %>%
+  select(c(7, 8))
+
+# 1. Select the 2nd and 8th columns 
+# 2. Filter the dataset to include only rows where cty is less than 15 
+mpg %>%
+  select(2, 8) %>%
+  filter(cty < 15)
+
+# 1. Filter the dataset to include only rows where cty is greater than 15
+# 2. Select the 2nd column from the filtered dataset 
+mpg %>%
+  filter(cty > 15) %>%
+  select(2)
+
+```
+
+
+#Group By and Summarise 
+```{r}
+# Display the column names of the dataset 
+names(mpg)
+
+# Select the 7th column
+select(mpg, 7)
+
+# Group the dataset by the 'drv' (drive type) column
+# Then, summarize the grouped data
+mpg %>%
+  group_by(drv) %>%
+  summarise(n = n(), avgcity = mean(cty, na.rm = TRUE))
+
+```
+
+
+#Mutate
+```{r}
+# Creating a new variable 'test' by multiplying the count (n) and average city mileage (avgcity) for each group
+mpg %>%
+  group_by(drv) %>%
+  summarise(n = n(), avgcity = mean(cty, na.rm = TRUE)) %>%
+  mutate(test = n * avgcity)
+
+# Arranging the dataset in descending order of cty
+mpg %>%
+  mutate(conversion = displ * 0.16) %>%
+  arrange(desc(cty))
+
+
+```
